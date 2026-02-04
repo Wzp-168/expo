@@ -159,9 +159,9 @@
 }
 
 
-- (EXDevLauncherErrorManager *)errorManage
+- (UIWindow *)currentWindow
 {
-  return _errorManager;
+  return _window;
 }
 
 - (void)start:(id<EXDevLauncherControllerDelegate>)delegate launchOptions:(NSDictionary * _Nullable)launchOptions
