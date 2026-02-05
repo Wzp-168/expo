@@ -1,11 +1,13 @@
 import { act, screen } from '@testing-library/react-native';
 import React from 'react';
 import { Text } from 'react-native';
+import { expectAssignable } from 'tsd';
 
 import { store } from '../global-state/router-store';
 import { router } from '../imperative-api';
 import Stack from '../layouts/Stack';
 import Tabs from '../layouts/Tabs';
+import type { StackScreenProps } from '../layouts/stack-utils';
 import { renderRouter, testRouter } from '../testing-library';
 /**
  * Stacks are the most common navigator and have unique navigation actions
@@ -693,6 +695,30 @@ describe('singular', () => {
       ],
       stale: false,
       type: 'stack',
+    });
+  });
+});
+
+describe('Stack.Screen types', () => {
+  it('accepts layout navigation props', () => {
+    expectAssignable<StackScreenProps>({ name: 'home', redirect: true });
+    expectAssignable<StackScreenProps>({ name: 'profile', initialParams: { id: '123' } });
+    expectAssignable<StackScreenProps>({ name: 'settings', dangerouslySingular: true });
+    expectAssignable<StackScreenProps>({
+      name: 'details',
+      dangerouslySingular: (name, params) => `${name}-${params.id}`,
+    });
+    expectAssignable<StackScreenProps>({
+      name: 'page',
+      listeners: { transitionStart: () => {} },
+    });
+    expectAssignable<StackScreenProps>({
+      name: 'page',
+      listeners: ({ route, navigation }) => ({ focus: () => {} }),
+    });
+    expectAssignable<StackScreenProps>({
+      name: 'page',
+      getId: ({ params }) => params?.id,
     });
   });
 });

@@ -1,4 +1,6 @@
 'use client';
+import type { ParamListBase, StackNavigationState } from '@react-navigation/native';
+import type { NativeStackNavigationEventMap } from '@react-navigation/native-stack';
 import { NativeStackNavigationOptions } from '@react-navigation/native-stack';
 import { Children, isValidElement, useMemo, type PropsWithChildren, type ReactNode } from 'react';
 
@@ -10,12 +12,59 @@ import {
   appendStackScreenBackButtonPropsToOptions,
 } from './screen';
 import { StackToolbar, appendStackToolbarPropsToOptions, type StackToolbarProps } from './toolbar';
+import type { ScreenProps as BaseScreenProps } from '../../useScreens';
 import { getAllChildrenOfType, isChildOfType } from '../../utils/children';
 import { Screen } from '../../views/Screen';
 
+type StackBaseScreenProps = BaseScreenProps<
+  NativeStackNavigationOptions,
+  StackNavigationState<ParamListBase>,
+  NativeStackNavigationEventMap
+>;
+
 export interface StackScreenProps extends PropsWithChildren {
-  name?: string;
+  /** Name is required when used inside a Layout component. */
+  name?: StackBaseScreenProps['name'];
+
+  /** Options to configure the screen. */
   options?: NativeStackNavigationOptions;
+
+  /**
+   * Redirect to the nearest sibling route.
+   * If all children are `redirect={true}`, the layout will render `null` as there are no children to render.
+   *
+   * Only supported when used inside a Layout component.
+   */
+  redirect?: StackBaseScreenProps['redirect'];
+
+  /**
+   * Initial params to pass to the route.
+   *
+   * Only supported when used inside a Layout component.
+   */
+  initialParams?: StackBaseScreenProps['initialParams'];
+
+  /**
+   * Listeners for navigation events.
+   *
+   * Only supported when used inside a Layout component.
+   */
+  listeners?: StackBaseScreenProps['listeners'];
+
+  /**
+   * Function to determine a unique ID for the screen.
+   * @deprecated Use `dangerouslySingular` instead.
+   *
+   * Only supported when used inside a Layout component.
+   */
+  getId?: StackBaseScreenProps['getId'];
+
+  /**
+   * When enabled, the navigator will reuse an existing screen instead of pushing a new one.
+   *
+   * Only supported when used inside a Layout component.
+   */
+  dangerouslySingular?: StackBaseScreenProps['dangerouslySingular'];
 }
 
 function extractBottomToolbars(children: ReactNode): React.ReactElement<StackToolbarProps>[] {
